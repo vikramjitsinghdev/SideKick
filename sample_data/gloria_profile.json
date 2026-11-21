@@ -1,0 +1,82 @@
+{
+  "_meta": {
+    "description": "Gloria's profile, consent settings and trusted contacts for the Heads-Up agent. All data is fictional sample data rebuilt from the ShiftKey persona screenshots. Phone numbers use the 555 range; emails use example.com — swap in your own test accounts.",
+    "timezone": "America/Halifax",
+    "note_on_assumptions": "Fields marked with an 'assumed' key are not in the persona and were invented so the prototype has something to work with."
+  },
+  "user": {
+    "id": "gloria",
+    "name": "Gloria Benoit",
+    "age": 68,
+    "home": "Bungalow, Halifax area, NS",
+    "phone": "+19025550101",
+    "email": "gloria.benoit.test@example.com",
+    "device": "iPhone SE (hand-me-down from Michelle, 2023)",
+    "communication_preference": "Prefers phone calls to texts",
+    "accessibility": {
+      "large_text": true,
+      "email_font_size_px": 22,
+      "email_button_min_height_px": 56
+    }
+  },
+  "consent": {
+    "opted_in": true,
+    "opted_in_at": "2026-10-19T10:00:00-03:00",
+    "agent_paused": false,
+    "changeable_event_categories": ["ava_pickup", "noah_pickup", "ray_appointment"],
+    "never_changeable": ["choir", "garden_club"],
+    "share_with_family": "Only whether a specific change was confirmed. Never message contents or phone activity."
+  },
+  "agent_rules": {
+    "alert_minutes_before": 30,
+    "morning_briefing_time": "08:00",
+    "confirmation_deadline_minutes_before_event": 60,
+    "send_immediately_if_event_within_minutes": 120,
+    "unclear_tomorrow_window": { "start": "00:00", "end": "05:00" },
+    "confirm_link_expires": "at_event_start",
+    "edit_scope": "single_occurrence_only",
+    "allowed_actions": ["edit_one_occurrence", "ask_gloria", "no_action", "flag_suspicious", "deadline_reminder"]
+  },
+  "trusted_contacts": [
+    {
+      "id": "michelle",
+      "name": "Michelle",
+      "relationship": "daughter",
+      "phone": "+19025550123",
+      "email": "michelle.test@example.com",
+      "can_change": ["ava_pickup", "noah_pickup", "ray_appointment"],
+      "escalation_opt_in": true,
+      "escalation_opt_in_at": "2026-10-19T10:05:00-03:00"
+    },
+    {
+      "id": "ray",
+      "name": "Ray",
+      "relationship": "husband",
+      "phone": "+19025550102",
+      "email": "ray.benoit.test@example.com",
+      "can_change": ["ray_appointment"],
+      "escalation_opt_in": false
+    }
+  ],
+  "known_non_family_senders": [
+    {
+      "id": "harbourview_pharmacy",
+      "name": "Harbourview Pharmacy",
+      "phone": "+19025550177",
+      "type": "business",
+      "trusted_for_calendar_edits": false,
+      "assumed": "phone number"
+    }
+  ],
+  "phone_usage_week_oct_19_25": {
+    "_source": "Persona Screen Time screenshots (used for the before/after story, not by the agent)",
+    "pickups_week": 9,
+    "pickups_per_day_avg": 2,
+    "wed_oct_21": { "pickups": 2, "first_pickup": "19:01" },
+    "notifications_week": 190,
+    "notifications_by_app_week": { "Messages": 98, "Facebook": 63 },
+    "unread_texts": 23,
+    "unread_emails": 1284,
+    "screen_time_by_app_week": { "Solitaire": "3h10m", "Facebook": "2h34m" }
+  }
+}

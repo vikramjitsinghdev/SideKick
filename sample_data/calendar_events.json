@@ -1,0 +1,86 @@
+{
+  "_meta": {
+    "description": "Gloria's calendar in a Google Calendar API-like shape. Recurring series use RRULE; your code expands them into occurrences. Load these into a test Google Calendar or use them directly with a fake calendar in pytest.",
+    "timezone": "America/Halifax",
+    "utc_offset_note": "October 2026 is ADT (-03:00). Clocks fall back Sun Nov 1, 2026, after which Halifax is AST (-04:00).",
+    "evidence": "Repeating 'Pick up Ava' Tue/Thu 3:15 at Oakwood Elementary with Alert: None comes from the persona screenshots. Other events are assumed."
+  },
+  "events": [
+    {
+      "id": "evt_ava_pickup",
+      "summary": "Pick up Ava",
+      "location": "Oakwood Elementary",
+      "start": { "dateTime": "2026-09-08T15:15:00-03:00", "timeZone": "America/Halifax" },
+      "end": { "dateTime": "2026-09-08T15:45:00-03:00", "timeZone": "America/Halifax" },
+      "recurrence": ["RRULE:FREQ=WEEKLY;BYDAY=TU,TH"],
+      "reminders": { "useDefault": false, "overrides": [] },
+      "extendedProperties": { "private": { "category": "ava_pickup", "owner_contact": "michelle" } }
+    },
+    {
+      "id": "evt_noah_pickup",
+      "summary": "Pick up Noah",
+      "location": "Little Acorns Daycare",
+      "start": { "dateTime": "2026-09-11T17:00:00-03:00", "timeZone": "America/Halifax" },
+      "end": { "dateTime": "2026-09-11T17:30:00-03:00", "timeZone": "America/Halifax" },
+      "recurrence": ["RRULE:FREQ=WEEKLY;BYDAY=FR"],
+      "reminders": { "useDefault": false, "overrides": [] },
+      "extendedProperties": { "private": { "category": "noah_pickup", "owner_contact": "michelle", "assumed": "time and daycare name" } }
+    },
+    {
+      "id": "evt_choir",
+      "summary": "Seniors' choir",
+      "location": "St. Andrew's Church Hall",
+      "start": { "dateTime": "2026-09-09T19:00:00-03:00", "timeZone": "America/Halifax" },
+      "end": { "dateTime": "2026-09-09T20:30:00-03:00", "timeZone": "America/Halifax" },
+      "recurrence": ["RRULE:FREQ=WEEKLY;BYDAY=WE"],
+      "reminders": { "useDefault": false, "overrides": [] },
+      "extendedProperties": { "private": { "category": "choir", "assumed": "day, time and location" } }
+    },
+    {
+      "id": "evt_garden_club",
+      "summary": "Garden club",
+      "location": "Community Centre",
+      "start": { "dateTime": "2026-09-14T13:00:00-03:00", "timeZone": "America/Halifax" },
+      "end": { "dateTime": "2026-09-14T14:30:00-03:00", "timeZone": "America/Halifax" },
+      "recurrence": ["RRULE:FREQ=MONTHLY;BYDAY=2MO"],
+      "reminders": { "useDefault": false, "overrides": [] },
+      "extendedProperties": { "private": { "category": "garden_club", "assumed": "day, time and location" } }
+    },
+    {
+      "id": "evt_ray_appt_1020",
+      "summary": "Drive Ray to appointment",
+      "location": "Clinic, Dartmouth",
+      "start": { "dateTime": "2026-10-20T10:30:00-03:00", "timeZone": "America/Halifax" },
+      "end": { "dateTime": "2026-10-20T11:30:00-03:00", "timeZone": "America/Halifax" },
+      "reminders": { "useDefault": false, "overrides": [] },
+      "extendedProperties": { "private": { "category": "ray_appointment", "owner_contact": "ray", "assumed": "entire event" } }
+    },
+    {
+      "id": "evt_ray_lab_1026",
+      "summary": "Drive Ray to lab appointment",
+      "location": "Lab, Halifax",
+      "start": { "dateTime": "2026-10-26T09:00:00-03:00", "timeZone": "America/Halifax" },
+      "end": { "dateTime": "2026-10-26T09:45:00-03:00", "timeZone": "America/Halifax" },
+      "reminders": { "useDefault": false, "overrides": [] },
+      "extendedProperties": { "private": { "category": "ray_appointment", "owner_contact": "ray", "assumed": "entire event; exists to test the two-match case" } }
+    },
+    {
+      "id": "evt_ray_eye_1026",
+      "summary": "Drive Ray to eye appointment",
+      "location": "Eye clinic, Bedford",
+      "start": { "dateTime": "2026-10-26T13:00:00-03:00", "timeZone": "America/Halifax" },
+      "end": { "dateTime": "2026-10-26T14:00:00-03:00", "timeZone": "America/Halifax" },
+      "reminders": { "useDefault": false, "overrides": [] },
+      "extendedProperties": { "private": { "category": "ray_appointment", "owner_contact": "ray", "assumed": "entire event; exists to test the two-match case" } }
+    }
+  ],
+  "reminders_app": {
+    "_note": "Her iPhone Reminders. Persona shows 4 reminders, none dated. Two are from the screenshots; two are assumed.",
+    "items": [
+      { "id": "rem_1", "title": "Pick up prescription Harbourview", "due": null, "location": null, "source": "persona" },
+      { "id": "rem_2", "title": "Ask Michelle about the parcel", "due": null, "location": null, "source": "persona" },
+      { "id": "rem_3", "title": "Buy bulbs for fall planting", "due": null, "location": null, "source": "assumed" },
+      { "id": "rem_4", "title": "Call Doreen about choir carpool", "due": null, "location": null, "source": "assumed" }
+    ]
+  }
+}

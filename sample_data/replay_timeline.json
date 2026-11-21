@@ -1,0 +1,89 @@
+{
+  "_meta": {
+    "description": "Expected simulated-clock replay of Wed Oct 21 - Thu Oct 22 for the showcase. 'without_heads_up' is what the persona screenshots show; 'with_heads_up' is what the agent should do. Use it to drive the Streamlit clock and to assert the decision log in pytest.",
+    "timezone": "America/Halifax",
+    "trigger_message_id": "sms_005"
+  },
+  "without_heads_up": [
+    { "at": "2026-10-21T19:01:00-03:00", "type": "phone_pickup", "detail": "Gloria's first phone pickup of the day" },
+    { "at": "2026-10-21T22:48:00-03:00", "type": "sms_received", "message_id": "sms_005", "detail": "Michelle's change arrives; Gloria doesn't see it" },
+    { "at": "2026-10-22T14:30:00-03:00", "type": "missed", "detail": "Early dismissal; nobody is at Oakwood Elementary" },
+    { "at": "2026-10-22T14:47:00-03:00", "type": "missed_call", "detail": "2 missed calls from Michelle" },
+    { "at": "2026-10-22T14:52:00-03:00", "type": "sms_received", "message_id": "sms_006", "detail": "'Ava's waiting at the office'" },
+    { "at": "2026-10-22T15:15:00-03:00", "type": "calendar_event", "detail": "Original 'Pick up Ava' time. Alert: None" },
+    { "at": "2026-10-22T15:58:00-03:00", "type": "sms_received", "message_id": "sms_007", "detail": "'Did you not see my text last night?'" }
+  ],
+  "with_heads_up": [
+    { "at": "2026-10-21T22:48:00-03:00", "type": "sms_received", "message_id": "sms_005" },
+    {
+      "at": "2026-10-21T22:48:02-03:00",
+      "type": "llm_extraction",
+      "output": {
+        "is_plan_change": true,
+        "event_hint": "Ava pickup",
+        "category": "ava_pickup",
+        "date_phrase": "tomorrow",
+        "new_time": "14:30",
+        "old_time": "15:15",
+        "is_cancellation": false,
+        "confidence": "high"
+      }
+    },
+    {
+      "at": "2026-10-21T22:48:03-03:00",
+      "type": "validation",
+      "checks": {
+        "agent_paused": false,
+        "sender_trusted": true,
+        "category_changeable": true,
+        "tomorrow_resolved_to": "2026-10-22",
+        "sent_in_unclear_window": false,
+        "matching_occurrences": 1,
+        "event_minutes_away": 942
+      },
+      "result": "pass"
+    },
+    {
+      "at": "2026-10-21T22:48:04-03:00",
+      "type": "calendar_edit",
+      "event_id": "evt_ava_pickup",
+      "occurrence_date": "2026-10-22",
+      "before": { "start": "2026-10-22T15:15:00-03:00", "end": "2026-10-22T15:45:00-03:00", "alert": null },
+      "after": {
+        "start": "2026-10-22T14:30:00-03:00",
+        "end": "2026-10-22T15:00:00-03:00",
+        "alert_at": "2026-10-22T14:00:00-03:00",
+        "summary": "Pick up Ava — CHANGED by Michelle, was 3:15"
+      }
+    },
+    { "at": "2026-10-21T22:48:04-03:00", "type": "briefing_scheduled", "send_at": "2026-10-22T08:00:00-03:00", "detail": "Event is more than 2 h away, so the email waits for the morning briefing" },
+    {
+      "at": "2026-10-22T08:00:00-03:00",
+      "type": "email_to_gloria",
+      "to": "gloria.benoit.test@example.com",
+      "from_display": "Heads-Up (VIP)",
+      "subject": "Today: pick up Ava at 2:30, not 3:15",
+      "body_large_print": "Good morning Gloria.\n\nMichelle sent a change last night:\n\nPICK UP AVA AT 2:30 TODAY (not 3:15)\nOakwood Elementary. Early dismissal.\n\nYour calendar is updated, and your phone will remind you at 2:00.\n\nPlease tap the button so Michelle knows you got it.",
+      "button": { "label": "Got it", "link_token": "tok_demo_7f3a9c", "expires_at": "2026-10-22T14:30:00-03:00" }
+    },
+    { "at": "2026-10-22T13:30:00-03:00", "type": "confirmation_check", "confirmed": false },
+    {
+      "at": "2026-10-22T13:30:01-03:00",
+      "type": "email_to_sender",
+      "to": "michelle.test@example.com",
+      "subject": "Mom hasn't confirmed the 2:30 pickup yet — please call her",
+      "body": "Hi Michelle. Your change (pick up Ava at 2:30 today instead of 3:15) is on your mom's calendar with a 2:00 alert, but she hasn't tapped 'Got it' yet. Please give her a call to make sure she knows.",
+      "shares_only": "whether this one change was confirmed"
+    },
+    { "at": "2026-10-22T14:00:00-03:00", "type": "calendar_alert", "detail": "Lock-screen alert: 'Pick up Ava — CHANGED by Michelle, was 3:15' at 2:30" },
+    { "at": "2026-10-22T14:30:00-03:00", "type": "event_start", "detail": "Confirmation link expires" }
+  ],
+  "alt_branch_confirmed": {
+    "_note": "Same as with_heads_up until 08:00; Gloria taps 'Got it' at 9:15, so no escalation email goes out.",
+    "events": [
+      { "at": "2026-10-22T09:15:00-03:00", "type": "confirmation_received", "link_token": "tok_demo_7f3a9c" },
+      { "at": "2026-10-22T09:15:01-03:00", "type": "status_to_sender", "to": "michelle.test@example.com", "body": "Your mom confirmed the 2:30 pickup for Ava today." },
+      { "at": "2026-10-22T13:30:00-03:00", "type": "confirmation_check", "confirmed": true, "detail": "No escalation needed" }
+    ]
+  }
+}

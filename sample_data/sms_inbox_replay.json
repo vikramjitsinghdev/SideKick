@@ -1,0 +1,95 @@
+{
+  "_meta": {
+    "description": "Simulated SMS inbox and call log for the Oct 19-22 replay. iPhone apps can't read real SMS, so the Streamlit app feeds these in on the simulated clock. Messages marked 'persona' are taken from the screenshots; the rest are filler so the inbox looks realistically noisy.",
+    "timezone": "America/Halifax",
+    "replay_window": { "start": "2026-10-21T18:00:00-03:00", "end": "2026-10-22T16:00:00-03:00" }
+  },
+  "messages": [
+    {
+      "id": "sms_001",
+      "from_phone": "+19025550123",
+      "contact_name": "Michelle",
+      "received_at": "2026-10-19T19:12:00-03:00",
+      "body": "Hi Mom, Ava says thanks for the cookies 🍪",
+      "read": true,
+      "source": "assumed"
+    },
+    {
+      "id": "sms_002",
+      "from_phone": "+19025550177",
+      "contact_name": "Harbourview Pharmacy",
+      "received_at": "2026-10-20T11:30:00-03:00",
+      "body": "Harbourview Pharmacy: 3rd reminder. Your prescription is ready for pickup. Items not picked up by Fri Oct 23 will be returned to stock.",
+      "read": false,
+      "source": "persona"
+    },
+    {
+      "id": "sms_003",
+      "from_phone": "+19025550148",
+      "contact_name": null,
+      "received_at": "2026-10-20T14:06:00-03:00",
+      "body": "CanadaPost FINAL NOTICE: your parcel is on hold due to unpaid shipping. Pay $1.99 redelivery fee within 24h: http://canadapost-redelivery.example.invalid/pay",
+      "read": false,
+      "source": "persona (link replaced with a dead .invalid address)"
+    },
+    {
+      "id": "sms_004",
+      "from_phone": "+19025550144",
+      "contact_name": "Doreen",
+      "received_at": "2026-10-21T16:20:00-03:00",
+      "body": "See you at choir tonight Gloria! Bring the blue folder.",
+      "read": false,
+      "source": "assumed"
+    },
+    {
+      "id": "sms_005",
+      "from_phone": "+19025550123",
+      "contact_name": "Michelle",
+      "received_at": "2026-10-21T22:48:00-03:00",
+      "body": "Mom can you get Ava at 2:30 tomorrow instead of 3:15? Early dismissal.",
+      "read": false,
+      "source": "persona",
+      "is_replay_trigger": true
+    },
+    {
+      "id": "sms_006",
+      "from_phone": "+19025550123",
+      "contact_name": "Michelle",
+      "received_at": "2026-10-22T14:52:00-03:00",
+      "body": "Mom?? School called, Ava's waiting at the office.",
+      "read": false,
+      "source": "persona",
+      "only_in_timeline": "without_heads_up"
+    },
+    {
+      "id": "sms_007",
+      "from_phone": "+19025550123",
+      "contact_name": "Michelle",
+      "received_at": "2026-10-22T15:58:00-03:00",
+      "body": "Did you not see my text last night?",
+      "read": false,
+      "source": "persona",
+      "only_in_timeline": "without_heads_up"
+    }
+  ],
+  "call_log": [
+    {
+      "id": "call_001",
+      "from_phone": "+19025550123",
+      "contact_name": "Michelle",
+      "at": "2026-10-22T14:47:00-03:00",
+      "status": "missed",
+      "source": "persona",
+      "only_in_timeline": "without_heads_up"
+    },
+    {
+      "id": "call_002",
+      "from_phone": "+19025550123",
+      "contact_name": "Michelle",
+      "at": "2026-10-22T14:47:40-03:00",
+      "status": "missed",
+      "source": "persona (persona shows 2 missed calls at 2:47 PM)",
+      "only_in_timeline": "without_heads_up"
+    }
+  ]
+}
