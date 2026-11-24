@@ -45,7 +45,9 @@ Use null if the text is about none of these.
 
 How to fill each field:
 - is_plan_change: true only if the text asks Gloria to change an UPCOMING plan (new time, \
-different day, or cancel). Thanks, chat, and questions about things that already happened are false.
+different day, or cancel). It is still true when the day or time is vague or "to be confirmed" \
+("one day next week", "a bit earlier") - code decides what to do with vague requests. \
+Thanks, chat, and questions about things that already happened are false.
 - date_phrase: copy the sender's date words exactly ("tomorrow", "Thursday", "today", "Oct 23"). \
 Do NOT convert them to a date. Use null if no day is given, and keep vague words as they are \
 (e.g. "one day next week").
@@ -68,7 +70,7 @@ JSON_SCHEMA = {
     "properties": {
         "is_plan_change": {"type": "boolean"},
         "event_hint": _NULLABLE_STR,
-        "category": {"type": ["string", "null"], "enum": sorted(CATEGORIES) + [None]},
+        "category": {"anyOf": [{"type": "string", "enum": sorted(CATEGORIES)}, {"type": "null"}]},
         "date_phrase": _NULLABLE_STR,
         "new_time": _NULLABLE_STR,
         "old_time": _NULLABLE_STR,
@@ -118,6 +120,8 @@ def _parse_json(raw: str) -> dict:
 
 class GroqProvider:
     name = "groq"
+    last_mode: str | None = None          # strict_schema | json_object | json_object_retry
+    last_strict_error: str | None = None  # why strict mode was refused, if it was
 
     def __init__(self, api_key: str, model: str = DEFAULT_GROQ_MODEL, client: Any = None):
         if client is None:
@@ -135,17 +139,34 @@ class GroqProvider:
         return _parse_json(resp.choices[0].message.content)
 
     def extract(self, system: str, user: str) -> dict:
+        """Strict schema first. If Groq rejects strict mode, plain JSON mode, with one
+        corrective retry if fields are missing. last_mode / last_strict_error say what happened."""
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+        self.last_mode, self.last_strict_error = None, None
         try:
-            return self._call(messages, {
+            result = self._call(messages, {
                 "type": "json_schema",
                 "json_schema": {"name": "plan_change", "strict": True, "schema": JSON_SCHEMA},
             })
-        except Exception as strict_err:  # e.g. a model without strict mode -> plain JSON mode
-            try:
-                return self._call(messages, {"type": "json_object"})
-            except Exception:
-                raise strict_err
+            self.last_mode = "strict_schema"
+            return result
+        except Exception as strict_err:
+            self.last_strict_error = f"{type(strict_err).__name__}: {strict_err}"[:300]
+        try:
+            result = self._call(messages, {"type": "json_object"})
+        except Exception:
+            raise RuntimeError(f"strict mode failed ({self.last_strict_error}); JSON mode failed too")
+        self.last_mode = "json_object"
+        missing = [k for k in JSON_SCHEMA["required"] if k not in result]
+        if missing:
+            retry = messages + [
+                {"role": "assistant", "content": json.dumps(result)},
+                {"role": "user", "content": f"Your JSON is missing these fields: {missing}. "
+                                            "Reply again with ALL fields of the form (use null where unknown)."},
+            ]
+            result = self._call(retry, {"type": "json_object"})
+            self.last_mode = "json_object_retry"
+        return result
 
 
 class GeminiProvider:

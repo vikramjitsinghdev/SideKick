@@ -1,0 +1,27 @@
+{
+  "_meta": {
+    "description": "What a correct LLM reading of each test text looks like. The rules tests run on these so they are exact and offline. The live LLM eval (scripts/eval_llm.py) compares the real model against them. null = the text must never reach the LLM (unknown sender or agent paused)."
+  },
+  "T01": {"is_plan_change": true, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "tomorrow", "new_time": "14:30", "old_time": "15:15", "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T02": {"is_plan_change": true, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "tomorrow", "new_time": "14:30", "old_time": "15:15", "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T03": {"is_plan_change": true, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "Thursday", "new_time": "14:30", "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T04": null,
+  "T05": {"is_plan_change": true, "event_hint": "every Pick up Ava event", "category": "ava_pickup", "date_phrase": null, "new_time": "13:00", "old_time": null, "is_cancellation": true, "scope": "all_occurrences", "change_count": 2, "confidence": "high"},
+  "T06": {"is_plan_change": true, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "tomorrow", "new_time": null, "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "low"},
+  "T07": {"is_plan_change": true, "event_hint": "Noah pickup", "category": "noah_pickup", "date_phrase": "tomorrow", "new_time": "16:00", "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T08": {"is_plan_change": true, "event_hint": "Dad's appointment", "category": "ray_appointment", "date_phrase": "tomorrow", "new_time": "11:00", "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T09": {"is_plan_change": false, "event_hint": null, "category": null, "date_phrase": null, "new_time": null, "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 0, "confidence": "high"},
+  "T10": {"is_plan_change": false, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "today", "new_time": null, "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 0, "confidence": "high"},
+  "T11": {"is_plan_change": true, "event_hint": "choir", "category": "choir", "date_phrase": "tomorrow", "new_time": "18:30", "old_time": "19:00", "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T12": {"is_plan_change": true, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "tomorrow", "new_time": null, "old_time": null, "is_cancellation": true, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T13": {"is_plan_change": true, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "today", "new_time": "15:00", "old_time": "15:15", "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T14": null,
+  "T15": null,
+  "T16": {"is_plan_change": true, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "one day next week", "new_time": "14:30", "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "low"},
+  "T17": {"is_plan_change": true, "event_hint": "Noah pickup", "category": "noah_pickup", "date_phrase": "Friday", "new_time": "16:45", "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T18": {"is_plan_change": true, "event_hint": "Ava pickup and Noah pickup", "category": "ava_pickup", "date_phrase": "Thursday", "new_time": "14:30", "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 2, "confidence": "high"},
+  "T19": {"is_plan_change": true, "event_hint": "Ray's appointment", "category": "ray_appointment", "date_phrase": "tomorrow", "new_time": "10:00", "old_time": "10:30", "is_cancellation": false, "scope": "one_occurrence", "change_count": 1, "confidence": "high"},
+  "T20": {"is_plan_change": false, "event_hint": "Ava pickup", "category": "ava_pickup", "date_phrase": "yesterday", "new_time": null, "old_time": null, "is_cancellation": false, "scope": "one_occurrence", "change_count": 0, "confidence": "high"},
+  "T21": null,
+  "T22": null
+}

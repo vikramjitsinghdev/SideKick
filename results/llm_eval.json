@@ -2,12 +2,14 @@
   "summary": {
     "model": "openai/gpt-oss-120b",
     "cases": 22,
-    "end_to_end_pass": 20,
-    "reading_field_accuracy": 0.882,
+    "end_to_end_pass": 22,
+    "reading_field_accuracy": 0.928,
     "llm_calls": 17,
     "texts_kept_from_llm": 5,
     "edits_when_unclear": 0,
-    "edits_from_unknown_senders": 0
+    "edits_from_unknown_senders": 0,
+    "strict_schema_calls": 17,
+    "fallback_calls": 0
   },
   "rows": [
     {
@@ -18,19 +20,21 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
       "llm_raw": {
         "category": "ava_pickup",
-        "is_plan_change": true,
-        "date_phrase": "tomorrow",
-        "new_time": "14:30",
-        "old_time": "15:15",
-        "is_cancellation": false,
-        "scope": "one_occurrence",
         "change_count": 1,
         "confidence": "high",
-        "event_hint": null
+        "date_phrase": "tomorrow",
+        "event_hint": "Ava pickup",
+        "is_cancellation": false,
+        "is_plan_change": true,
+        "new_time": "14:30",
+        "old_time": "15:15",
+        "scope": "one_occurrence"
       }
     },
     {
@@ -41,6 +45,8 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Date is unclear: 'tomorrow' sent between midnight and 5 AM",
       "llm_raw": {
@@ -48,7 +54,7 @@
         "change_count": 1,
         "confidence": "high",
         "date_phrase": "tomorrow",
-        "event_hint": "Ava pickup",
+        "event_hint": null,
         "is_cancellation": false,
         "is_plan_change": true,
         "new_time": "14:30",
@@ -64,6 +70,8 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
       "llm_raw": {
@@ -71,7 +79,7 @@
         "change_count": 1,
         "confidence": "high",
         "date_phrase": "Thursday",
-        "event_hint": "Ava pickup",
+        "event_hint": null,
         "is_cancellation": false,
         "is_plan_change": true,
         "new_time": "14:30",
@@ -87,6 +95,8 @@
       "pass": true,
       "llm_called": false,
       "provider": null,
+      "mode": null,
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Sender is not a trusted contact; the agent never acts on unknown senders",
       "llm_raw": null
@@ -99,6 +109,8 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [
         "is_cancellation: got False, want True"
       ],
@@ -124,6 +136,8 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [
         "confidence: got 'high', want 'low'"
       ],
@@ -149,6 +163,8 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "0 'noah_pickup' events on Wed Oct 21; need exactly one",
       "llm_raw": {
@@ -172,19 +188,21 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "2 'ray_appointment' events on Mon Oct 26; need exactly one",
       "llm_raw": {
-        "is_plan_change": true,
-        "event_hint": "Ray's appointment",
         "category": "ray_appointment",
+        "change_count": 1,
+        "confidence": "high",
         "date_phrase": "tomorrow",
+        "event_hint": "Dad's appointment",
+        "is_cancellation": false,
+        "is_plan_change": true,
         "new_time": "11:00",
         "old_time": null,
-        "is_cancellation": false,
-        "scope": "one_occurrence",
-        "change_count": 1,
-        "confidence": "high"
+        "scope": "one_occurrence"
       }
     },
     {
@@ -195,6 +213,8 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [
         "date_phrase: got 'Sunday', want None"
       ],
@@ -220,19 +240,24 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
-      "reading_mismatches": [],
+      "mode": "strict_schema",
+      "strict_error": null,
+      "reading_mismatches": [
+        "category: got None, want 'ava_pickup'",
+        "date_phrase: got None, want 'today'"
+      ],
       "reason": "Not a change to an upcoming plan",
       "llm_raw": {
-        "category": "ava_pickup",
-        "change_count": 0,
-        "confidence": "high",
-        "date_phrase": "today",
-        "event_hint": "Ava pickup",
-        "is_cancellation": false,
         "is_plan_change": false,
+        "event_hint": null,
+        "category": null,
+        "date_phrase": null,
         "new_time": null,
         "old_time": null,
-        "scope": "one_occurrence"
+        "is_cancellation": false,
+        "scope": "one_occurrence",
+        "change_count": 0,
+        "confidence": "high"
       }
     },
     {
@@ -243,19 +268,24 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
-      "reading_mismatches": [],
+      "mode": "strict_schema",
+      "strict_error": null,
+      "reading_mismatches": [
+        "new_time: got '06:30', want '18:30'",
+        "old_time: got '07:00', want '19:00'"
+      ],
       "reason": "Gloria hasn't allowed changes to 'choir'",
       "llm_raw": {
-        "category": "choir",
-        "change_count": 1,
-        "confidence": "high",
-        "date_phrase": "tomorrow",
-        "event_hint": "choir",
-        "is_cancellation": false,
         "is_plan_change": true,
-        "new_time": "18:30",
-        "old_time": "19:00",
-        "scope": "one_occurrence"
+        "event_hint": "choir",
+        "category": "choir",
+        "date_phrase": "tomorrow",
+        "new_time": "06:30",
+        "old_time": "07:00",
+        "is_cancellation": false,
+        "scope": "one_occurrence",
+        "change_count": 1,
+        "confidence": "high"
       }
     },
     {
@@ -266,19 +296,21 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "A cancellation would need a delete; telling Gloria instead of editing",
       "llm_raw": {
-        "category": "ava_pickup",
-        "change_count": 1,
-        "confidence": "high",
-        "date_phrase": "tomorrow",
-        "event_hint": null,
-        "is_cancellation": true,
         "is_plan_change": true,
+        "event_hint": "Ava pickup",
+        "category": "ava_pickup",
+        "date_phrase": "tomorrow",
         "new_time": null,
         "old_time": null,
-        "scope": "one_occurrence"
+        "is_cancellation": true,
+        "scope": "one_occurrence",
+        "change_count": 1,
+        "confidence": "high"
       }
     },
     {
@@ -289,6 +321,8 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
       "llm_raw": {
@@ -312,6 +346,8 @@
       "pass": true,
       "llm_called": false,
       "provider": null,
+      "mode": null,
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Sender is not a trusted contact; the agent never acts on unknown senders",
       "llm_raw": null
@@ -324,6 +360,8 @@
       "pass": true,
       "llm_called": false,
       "provider": null,
+      "mode": null,
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Sender is not a trusted contact; the agent never acts on unknown senders",
       "llm_raw": null
@@ -332,26 +370,26 @@
       "id": "T16",
       "category": "unclear_date",
       "expected": "ask_gloria [unclear_date]",
-      "actual": "no_action [not_a_change]",
-      "pass": false,
+      "actual": "ask_gloria [unclear_date]",
+      "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [
-        "is_plan_change: got False, want True",
-        "change_count: got 0, want 1",
         "confidence: got 'high', want 'low'"
       ],
-      "reason": "Not a change to an upcoming plan",
+      "reason": "Date is unclear: can't pin down a date from 'one day next week'",
       "llm_raw": {
-        "is_plan_change": false,
-        "event_hint": null,
+        "is_plan_change": true,
+        "event_hint": "Ava pickup",
         "category": "ava_pickup",
         "date_phrase": "one day next week",
         "new_time": "14:30",
         "old_time": null,
         "is_cancellation": false,
         "scope": "one_occurrence",
-        "change_count": 0,
+        "change_count": 1,
         "confidence": "high"
       }
     },
@@ -359,23 +397,25 @@
       "id": "T17",
       "category": "happy_path",
       "expected": "edit_one_occurrence [edit]",
-      "actual": "ask_gloria [unreadable]",
-      "pass": false,
+      "actual": "edit_one_occurrence [edit]",
+      "pass": true,
       "llm_called": true,
       "provider": "groq",
-      "reading_mismatches": [
-        "invalid JSON: missing fields: ['category', 'event_hint']"
-      ],
-      "reason": "Couldn't read the text reliably (missing fields: ['category', 'event_hint']); asking Gloria",
+      "mode": "strict_schema",
+      "strict_error": null,
+      "reading_mismatches": [],
+      "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
       "llm_raw": {
-        "is_plan_change": true,
+        "category": "noah_pickup",
+        "change_count": 1,
+        "confidence": "high",
         "date_phrase": "Friday",
+        "event_hint": "Noah pickup",
+        "is_cancellation": false,
+        "is_plan_change": true,
         "new_time": "16:45",
         "old_time": null,
-        "is_cancellation": false,
-        "scope": "one_occurrence",
-        "change_count": 1,
-        "confidence": "high"
+        "scope": "one_occurrence"
       }
     },
     {
@@ -386,6 +426,8 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [
         "category: got None, want 'ava_pickup'",
         "date_phrase: got 'Thursday and Friday', want 'Thursday'",
@@ -393,16 +435,16 @@
       ],
       "reason": "More than one change in a single text; asking Gloria",
       "llm_raw": {
-        "is_plan_change": true,
-        "event_hint": "ava_pickup and noah_pickup",
         "category": null,
+        "change_count": 2,
+        "confidence": "high",
         "date_phrase": "Thursday and Friday",
+        "event_hint": "Ava pickup Thursday, Noah pickup Friday",
+        "is_cancellation": false,
+        "is_plan_change": true,
         "new_time": null,
         "old_time": null,
-        "is_cancellation": false,
-        "scope": "one_occurrence",
-        "change_count": 2,
-        "confidence": "high"
+        "scope": "one_occurrence"
       }
     },
     {
@@ -413,19 +455,21 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
       "llm_raw": {
-        "is_plan_change": true,
-        "event_hint": null,
         "category": "ray_appointment",
+        "change_count": 1,
+        "confidence": "high",
         "date_phrase": "tomorrow",
+        "event_hint": "appointment moved",
+        "is_cancellation": false,
+        "is_plan_change": true,
         "new_time": "10:00",
         "old_time": "10:30",
-        "is_cancellation": false,
-        "scope": "one_occurrence",
-        "change_count": 1,
-        "confidence": "high"
+        "scope": "one_occurrence"
       }
     },
     {
@@ -436,19 +480,21 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
+      "mode": "strict_schema",
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Not a change to an upcoming plan",
       "llm_raw": {
-        "is_plan_change": false,
-        "event_hint": "Ava pickup",
         "category": "ava_pickup",
+        "change_count": 0,
+        "confidence": "high",
         "date_phrase": "yesterday",
+        "event_hint": null,
+        "is_cancellation": false,
+        "is_plan_change": false,
         "new_time": null,
         "old_time": null,
-        "is_cancellation": false,
-        "scope": "one_occurrence",
-        "change_count": 0,
-        "confidence": "high"
+        "scope": "one_occurrence"
       }
     },
     {
@@ -459,6 +505,8 @@
       "pass": true,
       "llm_called": false,
       "provider": null,
+      "mode": null,
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Agent is paused or Gloria hasn't opted in; message logged only",
       "llm_raw": null
@@ -471,6 +519,8 @@
       "pass": true,
       "llm_called": false,
       "provider": null,
+      "mode": null,
+      "strict_error": null,
       "reading_mismatches": [],
       "reason": "Sender is not a trusted contact; the agent never acts on unknown senders",
       "llm_raw": null

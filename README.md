@@ -214,7 +214,7 @@ AI Agent Dev/
 │   ├── test_google_calendar.py # Google adapter against a fake Google service
 │   ├── test_agent.py      # Orchestrator end to end, both Thursday scenarios
 │   └── fixtures/gold_extractions.json
-├── setup_google.py        # Google OAuth setup for the test account
+├── setup_google.py        # First sign-in test (superseded by scripts/seed_calendar.py)
 ├── requirements.txt
 └── README.md
 ```
@@ -224,8 +224,8 @@ Gmail and a real Twilio call are stretch goals; `notifier.py` is where they plug
 ## Getting started
 
 ```bash
-git clone https://github.com/<your-username>/<repo-name>.git
-cd <repo-name>
+git clone https://github.com/vikramjitsinghdev/SideKick.git
+cd SideKick
 python -m venv venv
 venv\Scripts\activate          # Windows (macOS/Linux: source venv/bin/activate)
 pip install -r requirements.txt
@@ -270,7 +270,7 @@ The first run opens a browser to sign in as the Gloria test account.
 - [x] Work plan (call-first contact plan after review)
 - [x] Rules engine with offline tests (22 texts, 0 edits when unclear, 0 from unknown senders)
 - [x] LLM extractor (Groq GPT-OSS 120B + Gemini backup) and live eval script
-- [x] Live LLM eval run: 22/22 end to end, 0 edits when unclear or from unknown senders
+- [x] Live LLM eval: 0 edits when unclear, 0 from unknown senders in every run (latest numbers in `results/llm_eval.json`)
 - [x] Call ladder: escalation and confirmation (press 1 / "Got it")
 - [x] Google Calendar adapter (test account): one occurrence at a time, never the series
 - [ ] *Stretch:* real Gmail email and Twilio call
@@ -289,7 +289,7 @@ The first run opens a browser to sign in as the Gloria test account.
 - Built `extractor.py`: strict JSON-schema call to Groq, plain-JSON retry, Gemini backup; texts are passed as data inside `<text>` tags. Switched from Llama 3.3 70B (shut down on Groq in Aug 2026) to `openai/gpt-oss-120b`.
 - Added `scripts/eval_llm.py` to score the real model, and updated the sample data (profile, replay timeline, test timings) for the call-first ladder.
 - 61 offline tests passing.
-- Live eval with `openai/gpt-oss-120b`: **22/22** texts handled correctly end to end, **0** edits when unclear, **0** edits from unknown senders, 94.8% of fields read exactly as expected. Every misread was caught by code.
+- First live eval with `openai/gpt-oss-120b`: **22/22** texts handled correctly end to end, **0** edits when unclear, **0** edits from unknown senders, 94.8% of fields read exactly as expected. Every misread was caught by code.
 - Built the call-first ladder (`escalation.py`, `confirm.py`, `notifier.py`): quiet hours, an urgent "call now" rule, a retry call, the large-print record email, and the family request. Pressing 1 or tapping the one-time "Got it" link cancels the rest. Tested against the T01/T13 timings and both Thursday branches in `replay_timeline.json`, word for word.
 - Prompt fix: `old_time` is only filled in when the text states it (T03).
 - 79 offline tests passing.
@@ -298,6 +298,12 @@ The first run opens a browser to sign in as the Gloria test account.
 - Built the orchestrator (`heads_up/agent.py`) and entry point (`app.py`): one object runs the inbox on a simulated clock, sends each text through the rules, applies edits, runs each change's call ladder, and exposes `snapshot()` for the frontend. Works offline (saved readings + in-memory calendar) or live (Groq + test Google Calendar). `python app.py` replays the whole of Thursday in the terminal.
 - 98 offline tests passing.
 - Built the Streamlit demo (`ui.py`). Gloria's phone panel shows the ringing call with a large **Press 1** button, the large-print email with **Got it**, reminders and "I wasn't sure" notes. Beside it: what Heads-Up did, Thursday's calendar, every text with its decision and step-by-step reasons, Thursday without Heads-Up, a box to send new test texts, the live test results, and Gloria's consent settings. Designed for an older reader: Atkinson Hyperlegible, 24 px text and 64 px buttons in her panel, colour pairs at 7:1 or better, status always in words, times as "2:30 PM".
+
+**Nov 24, 2026 (evening): eval check and cleanup**
+- The second live eval run (after the `old_time` prompt fix) scored **20/22**, still with 0 wrong edits. Two misses, both safe: T17 came back with fields missing, which showed Groq had refused strict schema mode and the extractor had silently fallen back to plain JSON mode; T16 ("one day next week, I'll let you know which") was read as not a change. Fixes: a strict-mode-compatible schema (`anyOf` for the nullable category), one corrective retry when fields are missing, the mode used is now recorded and reported by the eval, and the prompt says vague requests still count as plan changes.
+- Demo UI forced to a light theme (`.streamlit/config.toml`) so form fields and expanders stay readable when the browser is in dark mode.
+- `tests/` is tracked again so reviewers can run the test set.
+- 102 offline tests passing.
 
 ## Privacy note
 

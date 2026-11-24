@@ -74,6 +74,9 @@ def main() -> int:
             seen["called"] = True
             seen["raw"] = extractor(m)
             seen["provider"] = extractor.last_provider
+            groq = extractor.providers[0]
+            seen["mode"] = getattr(groq, "last_mode", None) if extractor.last_provider == "groq" else None
+            seen["strict_error"] = getattr(groq, "last_strict_error", None)
             return seen["raw"]
 
         decision = decide(msg, prof, CalendarStore(events["events"]), recording_extractor)
@@ -113,6 +116,8 @@ def main() -> int:
             "pass": ok,
             "llm_called": bool(seen.get("called")),
             "provider": seen.get("provider"),
+            "mode": seen.get("mode"),
+            "strict_error": seen.get("strict_error"),
             "reading_mismatches": mismatched,
             "reason": decision.reason,
             "llm_raw": seen.get("raw"),
@@ -122,6 +127,8 @@ def main() -> int:
     print(f"\n{'ID':<5}{'Pass':<6}{'Expected':<40}{'Actual':<40}LLM")
     for r in rows:
         llm = r["provider"] or ("-" if not r["llm_called"] else "failed")
+        if r.get("mode") and r["mode"] != "strict_schema":
+            llm += f" ({r['mode']})"
         print(f"{r['id']:<5}{'yes' if r['pass'] else 'NO':<6}{r['expected']:<40}{r['actual']:<40}{llm}")
         for m in r["reading_mismatches"]:
             print(f"{'':<11}reading: {m}")
@@ -136,7 +143,12 @@ def main() -> int:
         "texts_kept_from_llm": len(rows) - llm_calls,
         "edits_when_unclear": edits_when_unclear,
         "edits_from_unknown_senders": edits_from_unknown,
+        "strict_schema_calls": sum(1 for r in rows if r.get("mode") == "strict_schema"),
+        "fallback_calls": sum(1 for r in rows if r.get("mode") in ("json_object", "json_object_retry")),
     }
+    strict_errors = {r["strict_error"] for r in rows if r.get("strict_error")}
+    if strict_errors:
+        print("\nGroq refused strict mode; fell back to JSON mode. First error:\n  " + sorted(strict_errors)[0])
     print("\n" + json.dumps(summary, indent=2))
 
     out = ROOT / "results"
