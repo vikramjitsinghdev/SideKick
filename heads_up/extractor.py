@@ -51,7 +51,8 @@ Do NOT convert them to a date. Use null if no day is given, and keep vague words
 (e.g. "one day next week").
 - new_time / old_time: 24-hour HH:MM. Pickups and appointments happen in the daytime, so \
 "2:30" means 14:30, "at 4" means 16:00, "quarter to five" means 16:45, "noon" means 12:00. \
-old_time is the time being replaced, if the text states it ("instead of 3:15" -> 15:15). \
+old_time is the time being replaced, ONLY if the text itself states it ("instead of 3:15" -> 15:15); \
+never fill it in from the event list above, use null instead. \
 Use null if the time is vague ("a bit earlier", "after lunch").
 - is_cancellation: true if the plan is being cancelled or deleted rather than moved.
 - scope: "all_occurrences" if the text asks to change every repeat ("every", "all", "from now on"); \

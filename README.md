@@ -189,6 +189,9 @@ AI Agent Dev/
 ├── heads_up/
 │   ├── rules.py           # decide(): the pipeline above. apply(): moves one occurrence
 │   ├── extractor.py       # The only LLM call: Groq (GPT-OSS 120B) → Gemini backup
+│   ├── escalation.py      # Call-first ladder: when to call, retry, email, ask family
+│   ├── confirm.py         # One-time, expiring "Got it" links
+│   ├── notifier.py        # Simulated outbox for calls, emails and family messages
 │   ├── extraction.py      # The JSON form the LLM fills in, and its validator
 │   ├── dates.py           # "tomorrow", "Thursday", "Oct 23" → a date, or "unclear"
 │   ├── calendar_store.py  # In-memory calendar (Google Calendar shape), one-occurrence edits
@@ -200,13 +203,14 @@ AI Agent Dev/
 ├── tests/
 │   ├── test_rules.py      # 22 texts + fail-safe, date and schema tests
 │   ├── test_extractor.py  # Extractor with fake Groq/Gemini clients
+│   ├── test_escalation.py # Ladder timings, both Thursday replays, links, edge cases
 │   └── fixtures/gold_extractions.json
 ├── setup_google.py        # Google OAuth setup for the test account
 ├── requirements.txt
 └── README.md
 ```
 
-*Still to come:* `escalation.py` (call ladder), `confirm.py` (press 1 / "Got it" link), the Google Calendar and Gmail adapters, and `app.py` (Streamlit).
+*Still to come:* the Google Calendar adapter, and `app.py` (Streamlit). Gmail and a real Twilio call are stretch goals; `notifier.py` is where they plug in.
 
 ## Getting started
 
@@ -243,8 +247,8 @@ streamlit run app.py            # launch the demo (coming soon)
 - [x] Work plan (call-first contact plan after review)
 - [x] Rules engine with offline tests (22 texts, 0 edits when unclear, 0 from unknown senders)
 - [x] LLM extractor (Groq GPT-OSS 120B + Gemini backup) and live eval script
-- [ ] Live LLM eval run and prompt tuning
-- [ ] Call ladder: escalation and confirmation (press 1 / "Got it")
+- [x] Live LLM eval run: 22/22 end to end, 0 edits when unclear or from unknown senders
+- [x] Call ladder: escalation and confirmation (press 1 / "Got it")
 - [ ] Google Calendar and Gmail on test accounts
 - [ ] Streamlit demo with simulated-clock replay
 - [ ] Showcase video
@@ -260,6 +264,10 @@ streamlit run app.py            # launch the demo (coming soon)
 - Built `extractor.py`: strict JSON-schema call to Groq, plain-JSON retry, Gemini backup; texts are passed as data inside `<text>` tags. Switched from Llama 3.3 70B (shut down on Groq in Aug 2026) to `openai/gpt-oss-120b`.
 - Added `scripts/eval_llm.py` to score the real model, and updated the sample data (profile, replay timeline, test timings) for the call-first ladder.
 - 61 offline tests passing.
+- Live eval with `openai/gpt-oss-120b`: **22/22** texts handled correctly end to end, **0** edits when unclear, **0** edits from unknown senders, 94.8% of fields read exactly as expected. Every misread was caught by code.
+- Built the call-first ladder (`escalation.py`, `confirm.py`, `notifier.py`): quiet hours, an urgent "call now" rule, a retry call, the large-print record email, and the family request. Pressing 1 or tapping the one-time "Got it" link cancels the rest. Tested against the T01/T13 timings and both Thursday branches in `replay_timeline.json`, word for word.
+- Prompt fix: `old_time` is only filled in when the text states it (T03).
+- 79 offline tests passing.
 
 ## Privacy note
 

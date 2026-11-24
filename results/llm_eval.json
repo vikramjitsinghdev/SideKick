@@ -2,8 +2,8 @@
   "summary": {
     "model": "openai/gpt-oss-120b",
     "cases": 22,
-    "end_to_end_pass": 22,
-    "reading_field_accuracy": 0.948,
+    "end_to_end_pass": 20,
+    "reading_field_accuracy": 0.882,
     "llm_calls": 17,
     "texts_kept_from_llm": 5,
     "edits_when_unclear": 0,
@@ -21,16 +21,16 @@
       "reading_mismatches": [],
       "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
       "llm_raw": {
-        "is_plan_change": true,
-        "event_hint": "Ava pickup",
         "category": "ava_pickup",
+        "is_plan_change": true,
         "date_phrase": "tomorrow",
         "new_time": "14:30",
         "old_time": "15:15",
         "is_cancellation": false,
         "scope": "one_occurrence",
         "change_count": 1,
-        "confidence": "high"
+        "confidence": "high",
+        "event_hint": null
       }
     },
     {
@@ -64,21 +64,19 @@
       "pass": true,
       "llm_called": true,
       "provider": "groq",
-      "reading_mismatches": [
-        "old_time: got '15:15', want None"
-      ],
+      "reading_mismatches": [],
       "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
       "llm_raw": {
-        "is_plan_change": true,
-        "event_hint": "Ava pickup",
         "category": "ava_pickup",
-        "date_phrase": "Thursday",
-        "new_time": "14:30",
-        "old_time": "15:15",
-        "is_cancellation": false,
-        "scope": "one_occurrence",
         "change_count": 1,
-        "confidence": "high"
+        "confidence": "high",
+        "date_phrase": "Thursday",
+        "event_hint": "Ava pickup",
+        "is_cancellation": false,
+        "is_plan_change": true,
+        "new_time": "14:30",
+        "old_time": null,
+        "scope": "one_occurrence"
       }
     },
     {
@@ -106,16 +104,16 @@
       ],
       "reason": "Asks to change every repeat of an event; series edits are never allowed",
       "llm_raw": {
-        "category": "ava_pickup",
-        "change_count": 2,
-        "confidence": "high",
-        "date_phrase": null,
-        "event_hint": "Pick up Ava",
-        "is_cancellation": false,
         "is_plan_change": true,
+        "event_hint": "Pick up Ava",
+        "category": "ava_pickup",
+        "date_phrase": null,
         "new_time": "13:00",
         "old_time": null,
-        "scope": "all_occurrences"
+        "is_cancellation": false,
+        "scope": "all_occurrences",
+        "change_count": 2,
+        "confidence": "high"
       }
     },
     {
@@ -178,7 +176,7 @@
       "reason": "2 'ray_appointment' events on Mon Oct 26; need exactly one",
       "llm_raw": {
         "is_plan_change": true,
-        "event_hint": null,
+        "event_hint": "Ray's appointment",
         "category": "ray_appointment",
         "date_phrase": "tomorrow",
         "new_time": "11:00",
@@ -225,16 +223,16 @@
       "reading_mismatches": [],
       "reason": "Not a change to an upcoming plan",
       "llm_raw": {
-        "is_plan_change": false,
-        "event_hint": "thanks for getting Ava",
         "category": "ava_pickup",
+        "change_count": 0,
+        "confidence": "high",
         "date_phrase": "today",
+        "event_hint": "Ava pickup",
+        "is_cancellation": false,
+        "is_plan_change": false,
         "new_time": null,
         "old_time": null,
-        "is_cancellation": false,
-        "scope": "one_occurrence",
-        "change_count": 0,
-        "confidence": "high"
+        "scope": "one_occurrence"
       }
     },
     {
@@ -275,7 +273,7 @@
         "change_count": 1,
         "confidence": "high",
         "date_phrase": "tomorrow",
-        "event_hint": "Ava pickup",
+        "event_hint": null,
         "is_cancellation": true,
         "is_plan_change": true,
         "new_time": null,
@@ -334,24 +332,26 @@
       "id": "T16",
       "category": "unclear_date",
       "expected": "ask_gloria [unclear_date]",
-      "actual": "ask_gloria [unclear_date]",
-      "pass": true,
+      "actual": "no_action [not_a_change]",
+      "pass": false,
       "llm_called": true,
       "provider": "groq",
       "reading_mismatches": [
+        "is_plan_change: got False, want True",
+        "change_count: got 0, want 1",
         "confidence: got 'high', want 'low'"
       ],
-      "reason": "Date is unclear: can't pin down a date from 'one day next week'",
+      "reason": "Not a change to an upcoming plan",
       "llm_raw": {
-        "is_plan_change": true,
-        "event_hint": "Ava pickup",
+        "is_plan_change": false,
+        "event_hint": null,
         "category": "ava_pickup",
         "date_phrase": "one day next week",
         "new_time": "14:30",
         "old_time": null,
         "is_cancellation": false,
         "scope": "one_occurrence",
-        "change_count": 1,
+        "change_count": 0,
         "confidence": "high"
       }
     },
@@ -359,23 +359,23 @@
       "id": "T17",
       "category": "happy_path",
       "expected": "edit_one_occurrence [edit]",
-      "actual": "edit_one_occurrence [edit]",
-      "pass": true,
+      "actual": "ask_gloria [unreadable]",
+      "pass": false,
       "llm_called": true,
       "provider": "groq",
-      "reading_mismatches": [],
-      "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
+      "reading_mismatches": [
+        "invalid JSON: missing fields: ['category', 'event_hint']"
+      ],
+      "reason": "Couldn't read the text reliably (missing fields: ['category', 'event_hint']); asking Gloria",
       "llm_raw": {
-        "category": "noah_pickup",
-        "change_count": 1,
-        "confidence": "high",
-        "date_phrase": "Friday",
-        "event_hint": "Noah pickup",
-        "is_cancellation": false,
         "is_plan_change": true,
+        "date_phrase": "Friday",
         "new_time": "16:45",
         "old_time": null,
-        "scope": "one_occurrence"
+        "is_cancellation": false,
+        "scope": "one_occurrence",
+        "change_count": 1,
+        "confidence": "high"
       }
     },
     {
@@ -388,15 +388,15 @@
       "provider": "groq",
       "reading_mismatches": [
         "category: got None, want 'ava_pickup'",
-        "date_phrase: got None, want 'Thursday'",
+        "date_phrase: got 'Thursday and Friday', want 'Thursday'",
         "new_time: got None, want '14:30'"
       ],
       "reason": "More than one change in a single text; asking Gloria",
       "llm_raw": {
         "is_plan_change": true,
-        "event_hint": "ava_pickup,noah_pickup",
+        "event_hint": "ava_pickup and noah_pickup",
         "category": null,
-        "date_phrase": null,
+        "date_phrase": "Thursday and Friday",
         "new_time": null,
         "old_time": null,
         "is_cancellation": false,
@@ -416,16 +416,16 @@
       "reading_mismatches": [],
       "reason": "Trusted sender, clear date and time, exactly one matching occurrence",
       "llm_raw": {
-        "category": "ray_appointment",
-        "change_count": 1,
-        "confidence": "high",
-        "date_phrase": "tomorrow",
-        "event_hint": "appointment",
-        "is_cancellation": false,
         "is_plan_change": true,
+        "event_hint": null,
+        "category": "ray_appointment",
+        "date_phrase": "tomorrow",
         "new_time": "10:00",
         "old_time": "10:30",
-        "scope": "one_occurrence"
+        "is_cancellation": false,
+        "scope": "one_occurrence",
+        "change_count": 1,
+        "confidence": "high"
       }
     },
     {
@@ -439,16 +439,16 @@
       "reading_mismatches": [],
       "reason": "Not a change to an upcoming plan",
       "llm_raw": {
-        "category": "ava_pickup",
-        "change_count": 0,
-        "confidence": "high",
-        "date_phrase": "yesterday",
-        "event_hint": "Ava pickup",
-        "is_cancellation": false,
         "is_plan_change": false,
+        "event_hint": "Ava pickup",
+        "category": "ava_pickup",
+        "date_phrase": "yesterday",
         "new_time": null,
         "old_time": null,
-        "scope": "one_occurrence"
+        "is_cancellation": false,
+        "scope": "one_occurrence",
+        "change_count": 0,
+        "confidence": "high"
       }
     },
     {

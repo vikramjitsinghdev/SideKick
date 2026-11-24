@@ -43,6 +43,9 @@ class Decision:
     new_end: str | None = None
     alert_at: str | None = None
     summary_label: str | None = None
+    event_title: str | None = None     # e.g. "Pick up Ava" (for the call script)
+    location: str | None = None
+    sent_at: str | None = None
     log: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
@@ -147,6 +150,9 @@ def decide(msg: Message, profile: dict, calendar: CalendarStore, extract: Extrac
         new_end=(new_start + (occ.end - occ.start)).isoformat(),
         alert_at=(new_start - timedelta(minutes=alert_minutes)).isoformat(),
         summary_label=f"CHANGED by {sender['name']}, was {short_time(occ.start.time())}",
+        event_title=occ.summary.split(" — CHANGED")[0],
+        location=occ.location,
+        sent_at=msg.sent_at,
     )
 
 

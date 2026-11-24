@@ -23,6 +23,7 @@ class Occurrence:
     end: datetime
     alert_minutes: list[int] = field(default_factory=list)
     changed: bool = False
+    location: str | None = None
 
 
 def _parse_rrule(rule: str) -> dict[str, str]:
@@ -80,6 +81,7 @@ class CalendarStore:
                 start=start,
                 end=end,
                 alert_minutes=[o["minutes"] for o in ev.get("reminders", {}).get("overrides", [])],
+                location=ev.get("location"),
             ))
         return sorted(found, key=lambda o: o.start)
 
@@ -94,6 +96,7 @@ class CalendarStore:
             end=new_start + (occ.end - occ.start),
             alert_minutes=[alert_minutes],
             changed=True,
+            location=occ.location,
         )
         self.overrides[(occ.event_id, occ.start.date())] = moved
         return moved

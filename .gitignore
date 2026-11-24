@@ -1,2 +1,17 @@
 Heads-Up_Project_Context.md
+Heads-Up Work Plan.md
 .env
+
+# Google OAuth secrets (never commit)
+credentials.json
+token.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+#tests
+tests/
