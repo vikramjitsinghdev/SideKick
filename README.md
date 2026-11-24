@@ -186,7 +186,9 @@ Each step can stop with **no action** or **ask Gloria**, and every decision carr
 
 ```
 AI Agent Dev/
+├── app.py                 # Entry point: build_agent() for the UI; `python app.py` replays Thursday
 ├── heads_up/
+│   ├── agent.py           # HeadsUpAgent: the orchestrator (clock, inbox, decisions, ladders, snapshot)
 │   ├── rules.py           # decide(): the pipeline above. apply(): moves one occurrence
 │   ├── extractor.py       # The only LLM call: Groq (GPT-OSS 120B) → Gemini backup
 │   ├── escalation.py      # Call-first ladder: when to call, retry, email, ask family
@@ -203,19 +205,20 @@ AI Agent Dev/
 │   ├── eval_llm.py        # Runs the real LLM on all 22 texts and scores it
 │   ├── seed_calendar.py   # Loads the sample calendar onto the test Google account
 │   └── try_google_edit.py # Runs Michelle's text against the real test calendar
-├── sample_data/           # Profile, calendar, inbox, replay timeline, 22 test texts
+├── sample_data/           # Profile, calendar, inbox, replay timeline, 22 test texts, offline readings
 ├── tests/
 │   ├── test_rules.py      # 22 texts + fail-safe, date and schema tests
 │   ├── test_extractor.py  # Extractor with fake Groq/Gemini clients
 │   ├── test_escalation.py # Ladder timings, both Thursday replays, links, edge cases
 │   ├── test_google_calendar.py # Google adapter against a fake Google service
+│   ├── test_agent.py      # Orchestrator end to end, both Thursday scenarios
 │   └── fixtures/gold_extractions.json
 ├── setup_google.py        # Google OAuth setup for the test account
 ├── requirements.txt
 └── README.md
 ```
 
-*Still to come:* `app.py` (Streamlit). Gmail and a real Twilio call are stretch goals; `notifier.py` is where they plug in.
+*Still to come:* `ui.py`, the Streamlit frontend that draws `agent.snapshot()`. Gmail and a real Twilio call are stretch goals; `notifier.py` is where they plug in.
 
 ## Getting started
 
@@ -241,8 +244,13 @@ Then add your Google OAuth `credentials.json` for a **test** Google account (see
 ```bash
 pytest                          # offline tests, no API key needed
 python scripts/eval_llm.py      # real LLM on all 22 texts (needs GROQ_API_KEY)
-streamlit run app.py            # launch the demo (coming soon)
+python app.py                   # replay Wed night to Thu afternoon in the terminal (offline)
+python app.py --press-1         # same, but Gloria answers the 8 AM call and presses 1
+python app.py --live --google   # real LLM + the TEST Google Calendar
+streamlit run ui.py             # the demo UI (coming soon)
 ```
+
+**How the backend is driven.** `app.build_agent()` returns a `HeadsUpAgent`. A frontend moves the simulated clock (`step()`, `advance_to()`), lets Gloria act (`press_1()`, `tap_link()`, `pause()`), can inject a new text (`receive()`), and draws `snapshot()`: plain JSON with the clock, inbox and decisions, calendar, each change's ladder, the outbox (calls, emails, family messages) and a timeline. Offline mode needs no network: it uses saved LLM readings (`sample_data/offline_readings.json`) and an in-memory calendar; a text with no saved reading makes the agent ask Gloria.
 
 **Google Calendar (test account only).** Put the OAuth client file `credentials.json` in the repo root (it and `token.json` are git-ignored), then:
 
@@ -265,6 +273,7 @@ The first run opens a browser to sign in as the Gloria test account.
 - [x] Call ladder: escalation and confirmation (press 1 / "Got it")
 - [x] Google Calendar adapter (test account): one occurrence at a time, never the series
 - [ ] *Stretch:* real Gmail email and Twilio call
+- [x] Backend orchestrator (`HeadsUpAgent`, `app.py`) with a terminal replay
 - [ ] Streamlit demo with simulated-clock replay
 - [ ] Showcase video
 - [ ] *Stretch:* deadline reminders, suspicious-text flags, Twilio confirmation call
@@ -285,6 +294,8 @@ The first run opens a browser to sign in as the Gloria test account.
 - 79 offline tests passing.
 - Built the Google Calendar adapter (`google_calendar.py`): same interface as the test calendar, lists one Halifax day with `singleEvents=True` so each repeat is its own occurrence, and patches only that occurrence (it refuses if Google ever reports a series edit). `seed_calendar.py` loads the sample calendar onto the test account, updating the events `setup_google.py` made instead of duplicating them. `try_google_edit.py` runs Michelle's text against the real calendar, with `--reset` to undo.
 - 85 offline tests passing.
+- Built the orchestrator (`heads_up/agent.py`) and entry point (`app.py`): one object runs the inbox on a simulated clock, sends each text through the rules, applies edits, runs each change's call ladder, and exposes `snapshot()` for the frontend. Works offline (saved readings + in-memory calendar) or live (Groq + test Google Calendar). `python app.py` replays the whole of Thursday in the terminal.
+- 98 offline tests passing.
 
 ## Privacy note
 

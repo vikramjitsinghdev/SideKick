@@ -37,3 +37,9 @@ class SimulatedNotifier:
         item = OutboxItem(at, "family_message", to, body)
         self.outbox.append(item)
         return item
+
+    def question_to_gloria(self, at: datetime, to: str, body: str) -> OutboxItem:
+        """'Ask Gloria' decisions: tell her about the text instead of editing anything."""
+        item = OutboxItem(at, "question", to, body)
+        self.outbox.append(item)
+        return item
