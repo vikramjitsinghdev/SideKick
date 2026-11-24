@@ -195,22 +195,27 @@ AI Agent Dev/
 │   ├── extraction.py      # The JSON form the LLM fills in, and its validator
 │   ├── dates.py           # "tomorrow", "Thursday", "Oct 23" → a date, or "unclear"
 │   ├── calendar_store.py  # In-memory calendar (Google Calendar shape), one-occurrence edits
+│   ├── google_calendar.py # Same interface on the real Google Calendar (test account)
+│   ├── google_auth.py     # Google sign-in (credentials.json / token.json)
 │   ├── config.py          # Loads sample data; per-case profile overrides
 │   └── timeutil.py        # Halifax time helpers (DST-safe)
 ├── scripts/
-│   └── eval_llm.py        # Runs the real LLM on all 22 texts and scores it
+│   ├── eval_llm.py        # Runs the real LLM on all 22 texts and scores it
+│   ├── seed_calendar.py   # Loads the sample calendar onto the test Google account
+│   └── try_google_edit.py # Runs Michelle's text against the real test calendar
 ├── sample_data/           # Profile, calendar, inbox, replay timeline, 22 test texts
 ├── tests/
 │   ├── test_rules.py      # 22 texts + fail-safe, date and schema tests
 │   ├── test_extractor.py  # Extractor with fake Groq/Gemini clients
 │   ├── test_escalation.py # Ladder timings, both Thursday replays, links, edge cases
+│   ├── test_google_calendar.py # Google adapter against a fake Google service
 │   └── fixtures/gold_extractions.json
 ├── setup_google.py        # Google OAuth setup for the test account
 ├── requirements.txt
 └── README.md
 ```
 
-*Still to come:* the Google Calendar adapter, and `app.py` (Streamlit). Gmail and a real Twilio call are stretch goals; `notifier.py` is where they plug in.
+*Still to come:* `app.py` (Streamlit). Gmail and a real Twilio call are stretch goals; `notifier.py` is where they plug in.
 
 ## Getting started
 
@@ -239,6 +244,15 @@ python scripts/eval_llm.py      # real LLM on all 22 texts (needs GROQ_API_KEY)
 streamlit run app.py            # launch the demo (coming soon)
 ```
 
+**Google Calendar (test account only).** Put the OAuth client file `credentials.json` in the repo root (it and `token.json` are git-ignored), then:
+
+```bash
+python scripts/seed_calendar.py            # load the sample calendar (safe to re-run, never deletes)
+python scripts/try_google_edit.py          # Michelle's 10:48 PM text → moves only Thu Oct 22
+python scripts/try_google_edit.py --reset  # put Thursday back to 3:15 for the next run
+```
+The first run opens a browser to sign in as the Gloria test account.
+
 ## Roadmap
 
 - [x] Persona analysis (Gloria Benoit)
@@ -249,7 +263,8 @@ streamlit run app.py            # launch the demo (coming soon)
 - [x] LLM extractor (Groq GPT-OSS 120B + Gemini backup) and live eval script
 - [x] Live LLM eval run: 22/22 end to end, 0 edits when unclear or from unknown senders
 - [x] Call ladder: escalation and confirmation (press 1 / "Got it")
-- [ ] Google Calendar and Gmail on test accounts
+- [x] Google Calendar adapter (test account): one occurrence at a time, never the series
+- [ ] *Stretch:* real Gmail email and Twilio call
 - [ ] Streamlit demo with simulated-clock replay
 - [ ] Showcase video
 - [ ] *Stretch:* deadline reminders, suspicious-text flags, Twilio confirmation call
@@ -268,6 +283,8 @@ streamlit run app.py            # launch the demo (coming soon)
 - Built the call-first ladder (`escalation.py`, `confirm.py`, `notifier.py`): quiet hours, an urgent "call now" rule, a retry call, the large-print record email, and the family request. Pressing 1 or tapping the one-time "Got it" link cancels the rest. Tested against the T01/T13 timings and both Thursday branches in `replay_timeline.json`, word for word.
 - Prompt fix: `old_time` is only filled in when the text states it (T03).
 - 79 offline tests passing.
+- Built the Google Calendar adapter (`google_calendar.py`): same interface as the test calendar, lists one Halifax day with `singleEvents=True` so each repeat is its own occurrence, and patches only that occurrence (it refuses if Google ever reports a series edit). `seed_calendar.py` loads the sample calendar onto the test account, updating the events `setup_google.py` made instead of duplicating them. `try_google_edit.py` runs Michelle's text against the real calendar, with `--reset` to undo.
+- 85 offline tests passing.
 
 ## Privacy note
 

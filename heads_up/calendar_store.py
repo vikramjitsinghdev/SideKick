@@ -24,6 +24,7 @@ class Occurrence:
     alert_minutes: list[int] = field(default_factory=list)
     changed: bool = False
     location: str | None = None
+    series_id: str | None = None   # Google: the recurring series this occurrence belongs to
 
 
 def _parse_rrule(rule: str) -> dict[str, str]:
