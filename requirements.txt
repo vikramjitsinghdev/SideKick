@@ -1,0 +1,2 @@
+pytest>=8
+tzdata  # Windows has no built-in timezone database; zoneinfo needs this for America/Halifax

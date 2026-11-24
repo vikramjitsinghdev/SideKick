@@ -18,6 +18,8 @@
       "new_time": "HH:MM 24h | null",
       "old_time": "HH:MM 24h | null",
       "is_cancellation": "boolean",
+      "scope": "one_occurrence | all_occurrences  (added: lets code refuse series edits like T05)",
+      "change_count": "integer  (added: lets code catch two changes in one text like T18)",
       "confidence": "high | low"
     },
     "action_values": ["edit_one_occurrence", "ask_gloria", "no_action", "flag_suspicious", "deadline_reminder"]
