@@ -187,6 +187,7 @@ Each step can stop with **no action** or **ask Gloria**, and every decision carr
 ```
 AI Agent Dev/
 ├── app.py                 # Entry point: build_agent() for the UI; `python app.py` replays Thursday
+├── ui.py                  # Streamlit demo: draws agent.snapshot(), buttons call the agent
 ├── heads_up/
 │   ├── agent.py           # HeadsUpAgent: the orchestrator (clock, inbox, decisions, ladders, snapshot)
 │   ├── rules.py           # decide(): the pipeline above. apply(): moves one occurrence
@@ -218,7 +219,7 @@ AI Agent Dev/
 └── README.md
 ```
 
-*Still to come:* `ui.py`, the Streamlit frontend that draws `agent.snapshot()`. Gmail and a real Twilio call are stretch goals; `notifier.py` is where they plug in.
+Gmail and a real Twilio call are stretch goals; `notifier.py` is where they plug in.
 
 ## Getting started
 
@@ -247,7 +248,7 @@ python scripts/eval_llm.py      # real LLM on all 22 texts (needs GROQ_API_KEY)
 python app.py                   # replay Wed night to Thu afternoon in the terminal (offline)
 python app.py --press-1         # same, but Gloria answers the 8 AM call and presses 1
 python app.py --live --google   # real LLM + the TEST Google Calendar
-streamlit run ui.py             # the demo UI (coming soon)
+streamlit run ui.py             # the demo UI
 ```
 
 **How the backend is driven.** `app.build_agent()` returns a `HeadsUpAgent`. A frontend moves the simulated clock (`step()`, `advance_to()`), lets Gloria act (`press_1()`, `tap_link()`, `pause()`), can inject a new text (`receive()`), and draws `snapshot()`: plain JSON with the clock, inbox and decisions, calendar, each change's ladder, the outbox (calls, emails, family messages) and a timeline. Offline mode needs no network: it uses saved LLM readings (`sample_data/offline_readings.json`) and an in-memory calendar; a text with no saved reading makes the agent ask Gloria.
@@ -274,7 +275,7 @@ The first run opens a browser to sign in as the Gloria test account.
 - [x] Google Calendar adapter (test account): one occurrence at a time, never the series
 - [ ] *Stretch:* real Gmail email and Twilio call
 - [x] Backend orchestrator (`HeadsUpAgent`, `app.py`) with a terminal replay
-- [ ] Streamlit demo with simulated-clock replay
+- [x] Streamlit demo with simulated-clock replay (accessible: large print, 7:1 contrast, 64 px buttons in Gloria's view)
 - [ ] Showcase video
 - [ ] *Stretch:* deadline reminders, suspicious-text flags, Twilio confirmation call
 
@@ -296,6 +297,7 @@ The first run opens a browser to sign in as the Gloria test account.
 - 85 offline tests passing.
 - Built the orchestrator (`heads_up/agent.py`) and entry point (`app.py`): one object runs the inbox on a simulated clock, sends each text through the rules, applies edits, runs each change's call ladder, and exposes `snapshot()` for the frontend. Works offline (saved readings + in-memory calendar) or live (Groq + test Google Calendar). `python app.py` replays the whole of Thursday in the terminal.
 - 98 offline tests passing.
+- Built the Streamlit demo (`ui.py`). Gloria's phone panel shows the ringing call with a large **Press 1** button, the large-print email with **Got it**, reminders and "I wasn't sure" notes. Beside it: what Heads-Up did, Thursday's calendar, every text with its decision and step-by-step reasons, Thursday without Heads-Up, a box to send new test texts, the live test results, and Gloria's consent settings. Designed for an older reader: Atkinson Hyperlegible, 24 px text and 64 px buttons in her panel, colour pairs at 7:1 or better, status always in words, times as "2:30 PM".
 
 ## Privacy note
 

@@ -1,3 +1,4 @@
+streamlit>=1.50          # demo UI (ui.py); needs keyed containers and width="stretch"
 groq>=0.30                   # Groq API client (strict JSON-schema structured outputs)
 google-api-python-client     # Google Calendar (and Gmail, stretch)
 google-auth-httplib2

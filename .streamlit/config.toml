@@ -1,0 +1,7 @@
+# Heads-Up demo theme. Light base so every widget has a light surface with dark text.
+[theme]
+base = "light"
+primaryColor = "#14633A"              # deep green: Press 1, Got it, focus accents
+backgroundColor = "#F5F7FA"           # page
+secondaryBackgroundColor = "#FFFFFF"  # inputs, expanders, code blocks
+textColor = "#14213D"                 # navy ink, 14.9:1 on the page
