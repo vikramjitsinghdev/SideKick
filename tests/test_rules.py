@@ -36,20 +36,13 @@ def run(case, profile, calendar):
     return decide(msg, prof, calendar, gold_extractor(case["id"]))
 
 
-# Why each case should stop. Checking the reason, not just the action, stops a
-# case from passing by luck (e.g. a wrong date that happens to have zero matches).
-EXPECTED_CODE = {
-    "T01": "edit", "T02": "unclear_date", "T03": "edit", "T04": "unknown_sender",
-    "T05": "series_request", "T06": "vague_time", "T07": "match_count", "T08": "match_count",
-    "T09": "not_a_change", "T10": "not_a_change", "T11": "category_not_allowed",
-    "T12": "cancellation", "T13": "edit", "T14": "unknown_sender", "T15": "unknown_sender",
-    "T16": "unclear_date", "T17": "edit", "T18": "multiple_changes", "T19": "edit",
-    "T20": "not_a_change", "T21": "paused", "T22": "unknown_sender",
-}
+# Why each case should stop (expected.code in test_messages.json). Checking the
+# reason, not just the action, stops a case from passing by luck.
+EXPECTED_CODE = {c["id"]: c["expected"]["code"] for c in CASES}
 
 
 def test_every_case_has_an_expected_code():
-    assert set(EXPECTED_CODE) == {c["id"] for c in CASES}
+    assert all(c["expected"].get("code") for c in CASES)
 
 
 @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])

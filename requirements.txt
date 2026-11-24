@@ -1,2 +1,3 @@
+groq>=0.30   # Groq API client (strict JSON-schema structured outputs)
 pytest>=8
-tzdata  # Windows has no built-in timezone database; zoneinfo needs this for America/Halifax
+tzdata       # Windows has no built-in timezone database; zoneinfo needs this for America/Halifax

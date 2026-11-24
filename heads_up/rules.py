@@ -114,7 +114,9 @@ def decide(msg: Message, profile: dict, calendar: CalendarStore, extract: Extrac
     if ex.confidence != "high":
         return stop(ASK, "low_confidence", "The reading of the text is low-confidence", **base)
     new_time = parse_hhmm(ex.new_time)
-    if not SANE_HOURS[0] <= new_time <= SANE_HOURS[1]:
+    window = profile["agent_rules"].get("sane_new_time_window")
+    earliest, latest = (parse_hhmm(window["start"]), parse_hhmm(window["end"])) if window else SANE_HOURS
+    if not earliest <= new_time <= latest:
         return stop(ASK, "implausible_time", f"New time {ex.new_time} is outside 7 AM-9 PM; likely a misread", **base)
 
     # 6. Exactly one matching occurrence, or no edit.
@@ -154,10 +156,10 @@ def apply(decision: Decision, calendar: CalendarStore, profile: dict) -> Occurre
         return None
     day = parse_dt(decision.new_start).date()
     occ = next(o for o in calendar.occurrences_on(day) if o.event_id == decision.event_id)
-    base_summary = occ.summary.split(" (CHANGED")[0]
+    base_summary = occ.summary.split(" — CHANGED")[0]
     return calendar.move_occurrence(
         occ,
         parse_dt(decision.new_start),
-        summary=f"{base_summary} ({decision.summary_label})",
+        summary=f"{base_summary} — {decision.summary_label}",
         alert_minutes=profile["agent_rules"]["alert_minutes_before"],
     )
